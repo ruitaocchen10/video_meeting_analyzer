@@ -1,0 +1,6 @@
+openai-whisper 
+pyaudio 
+numpy
+opencv
+mediapipe
+#For macOS, brew install portaudio first before pip install pyaudio
