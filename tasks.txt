@@ -1,0 +1,6 @@
+Train AI Agent/Model
+- Give sample inputs of data and see what it can do or what feedback it can generate
+- Don't connect live data just yet
+
+Speech
+- Use Whisper to incorporate speech pacing, clarity, etc.
