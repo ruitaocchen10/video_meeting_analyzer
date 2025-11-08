@@ -3,15 +3,15 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen min-w-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-blue-100 px-6 py-20 text-center">
+    <main className="min-h-screen min-w-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-slate-900 px-6 py-20 text-center">
       {/* Hero Section */}
       <div className="max-w-3xl">
-        <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+        <h1 className="text-5xl md:text-6xl text-gray-100 mb-6" style={{ fontWeight: 700 }}>
           Ace Your Interviews with{" "}
-          <span className="text-indigo-600">AI-Powered Practice</span>
+          <span className="text-emerald-400">AI-Powered Practice</span>
         </h1>
 
-        <p className="text-lg md:text-xl text-gray-700 mb-10">
+        <p className="text-lg md:text-xl text-gray-300 mb-10">
           Practice with an intelligent virtual interviewer that analyzes your
           answers, tone, and body language — helping you perform your best when
           it matters most.
@@ -19,7 +19,7 @@ export default function LandingPage() {
 
         <Link
           href="/app"
-          className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-lg px-8 py-4 rounded-full shadow-lg transition"
+          className="inline-block bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-lg px-8 py-4 rounded-full shadow-lg transition"
         >
           Launch
         </Link>
@@ -51,9 +51,9 @@ interface FeatureCardProps {
 
 function FeatureCard({ title, description }: FeatureCardProps) {
   return (
-    <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition">
-      <h3 className="text-xl font-semibold text-gray-800 mb-3">{title}</h3>
-      <p className="text-gray-600">{description}</p>
+    <div className="bg-gray-700 p-8 rounded-2xl shadow-md hover:shadow-lg transition border border-gray-600">
+      <h3 className="text-xl font-semibold text-gray-100 mb-3">{title}</h3>
+      <p className="text-gray-300">{description}</p>
     </div>
   );
 }
