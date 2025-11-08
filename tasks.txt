@@ -14,3 +14,7 @@ Great! Can you create an AI agent using Google gemini that will take in the data
 - Head motion: {head_velocity}
 - Hand motion: {hand_velocity}
 - Eye contact deviation: {eye_deviation}) and from there give feedback on those points? I was also thinking, what if the AI agent asks as a practice interviewer. The agent asks a question, then monitors the person's response over a set amount of time. From there the agent can offer immediate feedback based on the posture and the clarity of the speech. Then the agent can ask another question. That way the agent is interacting and essentially interviewing the interviewee. Also, we could say that we can develop different AI agents with different "difficulties" and things they look for, helping users adapt to different types of interviewers, whether they have al ower speech threshold, lower volume, get distracted easily etc. The AI agent should have a detailed prompt And directly interact with the user live. I want the AI agent to also have other functionality rather than just outputting speech because that's essentially want an LLM is. Please brainstorm and implement other agentic features to allow the AI interviewer to interact more directly with the user
+
+
+
+#LLM General Context

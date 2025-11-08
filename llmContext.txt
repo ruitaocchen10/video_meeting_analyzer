@@ -1,0 +1,121 @@
+Hi! I’m working on an AI-powered interview preparation project and I’d like your help implementing it, refining it, and answering technical questions. Here’s the full context of the project so far:
+
+Project Overview:
+The project is a mock interview application designed to help users practice and improve their interview skills. It monitors posture, gestures, eye contact, and speech in real time and provides live feedback through an AI agent. The system combines computer vision, audio analysis, and an AI agent to simulate an interviewer that can react and give feedback autonomously. This is currently an MVP, with the base focus on capturing basic metrics and providing feedback during a short interview session.
+
+Modules and Current Implementation:
+
+camera.py (Computer Vision & Posture Monitoring):
+
+Uses OpenCV and MediaPipe to track physical behaviors.
+
+Measures metrics including:
+
+Shoulder tilt
+
+Head tilt
+
+Head motion
+
+Hand fidgeting
+
+Eye contact (iris tracking)
+
+Outputs all metrics as a JSON file, e.g.:
+
+{
+  "left_iris_relative": 0.3,
+  "right_iris_relative": 0.35,
+  "head_tilt": 180,
+  "shoulder_tilt": 180,
+  "hand_fidget": 1.0
+}
+
+
+Currently runs independently but is intended to feed metrics into the AI agent.
+
+voice.py (Audio & Speech Analysis):
+
+Uses OpenAI Whisper to transcribe live speech.
+
+Tracks metrics including:
+
+Speech words per minute (WPM)
+
+Pause rate (percentage of time spent pausing)
+
+Volume in decibels
+
+Outputs JSON including transcription, WPM, volume, and pause percentage, e.g.:
+
+{
+  "transcript": "I am very excited about this opportunity...",
+  "wpm": 120,
+  "pause_percent": 5,
+  "volume_db": -65 
+}
+
+Note: The volume_dB output will be around -65 dB
+
+Currently runs independently but is intended to feed metrics into the AI agent.
+
+agent.py (AI Interviewer):
+
+Uses Google’s Agent Development Kit (ADK) to act as a mock interviewer.
+
+Consumes JSON outputs from camera.py and voice.py as context and “environment” inputs.
+
+Plays the role of a casual, friendly interviewer with wide acceptable ranges for metrics.
+
+Responsibilities include:
+
+Analyzing posture and speech metrics and assigning scores (e.g., eye contact, hand fidgeting, speech clarity).
+
+Giving feedback after each answer in a natural way, e.g.,
+
+"Great job! I noticed your speech is a little fast, and your hand movements are slightly distracting."
+
+Asking follow-up questions (currently 2 total).
+
+Summarizing the interview at the end with scores for engagement, clarity, posture, etc., and giving next steps for improvement.
+
+The agent is autonomous; it should monitor its own outputs, evaluate metrics, and generate feedback and questions without relying on static LLM calls.
+
+Future plans include multiple interviewer personas and session tracking with scoring from 0–100.
+
+Project Goals / MVP:
+
+Integrate camera.py and voice.py JSON outputs into agent.py.
+
+Provide autonomous, real-time feedback during a short mock interview (2 questions).
+
+Score user performance for engagement, clarity, and posture.
+
+Keep architecture modular for future expansion:
+
+Additional interview personas (e.g., strict, technical, professional).
+
+Session tracking with user accounts.
+
+Advanced feedback metrics (confidence estimation, filler words, sentiment analysis).
+
+Current Status:
+
+camera.py and voice.py are fully functional and output JSON metrics independently.
+
+agent.py has a baseline AI agent implemented with Google ADK but needs refinement to process inputs fully, make autonomous decisions, give feedback, ask questions, and summarize sessions.
+
+Focus is on a friendly, casual interviewer with two questions and basic scoring.
+
+Important Notes for Any LLM Working on This:
+
+Use JSON as the interface between modules.
+
+Agent must act autonomously and monitor its own metrics; do not rely solely on LLM-generated prompts.
+
+MVP focus is simple but should leave room for scaling to a full-featured interview coach.
+
+Metrics to monitor include: posture (head tilt, shoulder tilt, hand fidget), eye contact (iris tracking), speech rate (WPM), pause rate, volume, and transcript text.
+
+Overall Objective:
+Create a functional, autonomous mock interview application where the AI agent analyzes both visual and audio inputs, provides live feedback after each answer, asks follow-up questions, and summarizes the session with actionable feedback and scoring.
