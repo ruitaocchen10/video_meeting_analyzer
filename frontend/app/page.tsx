@@ -10,12 +10,12 @@ export default function LandingPage() {
           className="text-5xl md:text-6xl text-gray-100 mb-6"
           style={{ fontWeight: 700 }}
         >
-          Interview With Confidence Using{" "}
+          Build Interview Confidence Using{" "}
           <span className="text-emerald-400">Live AI-Powered Feedback</span>
         </h1>
 
         <p className="text-lg md:text-xl text-gray-300 mb-10">
-          Practice with an intelligent virtual interviewer that analyzes your
+          Practice with an AI interviewer that analyzes your
           answers, tone, and body language — helping you perform your best when
           it matters most.
         </p>
@@ -40,7 +40,7 @@ export default function LandingPage() {
         />
         <FeatureCard
           title="Instant Personalized Feedback"
-          description="Get clear, actionable insights to improve how you answer and present."
+          description="Get clear, actionable insights to polish your answers and presentation."
         />
       </div>
     </main>
