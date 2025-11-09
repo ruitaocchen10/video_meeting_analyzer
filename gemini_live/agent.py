@@ -1,6 +1,6 @@
 """
-agent.py - AI Interview Coach using Google's Agent Development Kit (ADK)
-Modified to work with InMemorySessionService and Runner
+agent.py - AI Interview Coach with Gemini Live Integration
+Modified to support both batch analysis and real-time streaming
 """
 
 from dotenv import load_dotenv
@@ -12,7 +12,8 @@ from google import genai
 from google.genai import types
 from pydantic import BaseModel, Field
 import json
-from typing import Dict, Any
+from typing import Dict, Any, AsyncGenerator
+import asyncio
 
 load_dotenv()
 
@@ -272,7 +273,93 @@ def evaluate_overall_performance(question_num: int, metrics_summary: str) -> dic
 
 
 # ============================================================================
-# AGENT DEFINITION
+# GEMINI LIVE INTEGRATION
+# ============================================================================
+
+class LiveInterviewCoach:
+    """Real-time interview coach using Gemini Live API"""
+    
+    def __init__(self):
+        self.client = genai.Client(api_key=api_key)
+        self.config = types.LiveConnectConfig(
+            response_modalities=["TEXT"],  # Text-only responses for now
+        )
+        
+        self.system_instruction = """You are Sarah, a supportive real-time interview coach.
+
+REAL-TIME MONITORING MODE:
+You continuously receive metrics updates every few seconds during the interview response.
+Your job is to monitor performance and provide gentle, immediate feedback when issues arise.
+
+FEEDBACK RULES:
+- Only give feedback when you see PERSISTENT problems (3+ consecutive updates)
+- Keep feedback VERY brief and actionable (1 sentence max)
+- Use gentle language: "Try to...", "Consider...", "Remember to..."
+- Don't interrupt for minor issues
+- Focus on the most critical issue at a time
+
+METRICS YOU MONITOR:
+- Eye contact (iris position and gaze maintenance)
+- Posture (shoulders, head tilt, forward lean)
+- Movement (head motion, hand fidgeting)
+- Speech (pace, volume, clarity) - when available
+
+EXAMPLE INTERVENTIONS:
+- "Try to look directly at the camera"
+- "Sit up a bit straighter"
+- "Try to keep your hands still"
+- "Slow down your pace a little"
+
+Remember: Your goal is to help without being distracting. Only speak up when really needed."""
+    
+    async def stream_analysis(
+        self, 
+        camera_stream: AsyncGenerator[Dict, None],
+        voice_stream: AsyncGenerator[Dict, None] = None
+    ) -> AsyncGenerator[str, None]:
+        """
+        Stream real-time analysis as metrics come in
+        
+        Args:
+            camera_stream: Async generator yielding camera metrics
+            voice_stream: Async generator yielding voice metrics (optional)
+            
+        Yields:
+            Real-time feedback messages from the coach
+        """
+        session = self.client.aio.live.connect(
+            model=MODEL_NAME,
+            config=self.config
+        )
+        
+        async with session:
+            # Send system instruction
+            await session.send(self.system_instruction, end_of_turn=True)
+            
+            # Process camera metrics as they arrive
+            async for camera_data in camera_stream:
+                # Format metrics for the model
+                metrics_text = self._format_metrics_for_live(camera_data)
+                
+                # Send to model
+                await session.send(metrics_text, end_of_turn=True)
+                
+                # Get response
+                async for response in session.receive():
+                    if response.text:
+                        yield response.text
+    
+    def _format_metrics_for_live(self, metrics: Dict) -> str:
+        """Format metrics in a concise way for real-time streaming"""
+        return f"""Current metrics:
+- Eye contact: {metrics.get('eye_contact_maintained', True)}
+- Iris: L={metrics.get('left_iris_relative', 0):.2f}, R={metrics.get('right_iris_relative', 0):.2f}
+- Posture: shoulder={metrics.get('shoulder_angle', 180):.1f}°, tilt={metrics.get('head_tilt', 180):.1f}°, lean={metrics.get('forward_lean', 0):.2f}
+- Motion: head={metrics.get('head_motion_score', 0):.1f}, hands={metrics.get('hand_motion_score', 0):.1f}"""
+
+
+# ============================================================================
+# AGENT DEFINITION (Original batch processing)
 # ============================================================================
 
 interview_agent = LlmAgent(
@@ -342,6 +429,9 @@ interview_runner = Runner(
     session_service=session_service
 )
 
+# Create live coach instance
+live_coach = LiveInterviewCoach()
+
 # ============================================================================
 # EXPORT FOR APP.PY
 # ============================================================================
@@ -354,5 +444,6 @@ __all__ = [
     "interview_agent",
     "session_service",
     "types",
-    "InterviewInput"
+    "InterviewInput",
+    "live_coach"  # NEW: Export live coach
 ]
