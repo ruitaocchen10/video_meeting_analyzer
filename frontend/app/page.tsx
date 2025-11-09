@@ -10,8 +10,8 @@ export default function LandingPage() {
           className="text-5xl md:text-6xl text-gray-100 mb-6"
           style={{ fontWeight: 700 }}
         >
-          Ace Your Interviews with{" "}
-          <span className="text-emerald-400">AI-Powered Practice</span>
+          Interview With Confidence Using{" "}
+          <span className="text-emerald-400">Live AI-Powered Feedback</span>
         </h1>
 
         <p className="text-lg md:text-xl text-gray-300 mb-10">
