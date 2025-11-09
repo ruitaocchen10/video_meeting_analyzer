@@ -125,6 +125,17 @@ async def start_camera(sid, data):
         traceback.print_exc()
         await sio.emit('error', {'message': f'Failed to start camera: {str(e)}'}, to=sid)
 
+@sio.event
+async def start_interview(sid, data):
+    """Start interview session"""
+    global camera_active
+    if not camera_active:
+        await start_camera(sid, data)
+    print(f"Client {sid} requested to start interview")
+    
+	# TODO: Initialize interview session from file that Vinh is working on
+
+    await sio.emit('interview_status', {'status': 'started', 'message': 'Interview started'}, to=sid)
 
 @sio.event
 async def stop_camera(sid, data):

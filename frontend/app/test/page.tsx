@@ -12,6 +12,7 @@ export default function HomePage() {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [connected, setConnected] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
+  const [interviewStarted, setInterviewStarted] = useState(false);
   const [videoFrame, setVideoFrame] = useState<string | null>(null);
   const [aiResponse, setAiResponse] = useState<string>("Waiting for AI response...");
   const [audioStatus, setAudioStatus] = useState<string>("No audio processed yet");
@@ -39,6 +40,7 @@ export default function HomePage() {
       console.log("Disconnected from backend");
       setConnected(false);
       setCameraActive(false);
+      setInterviewStarted(false);
     });
 
     newSocket.on("connection_status", (data) => {
@@ -52,6 +54,16 @@ export default function HomePage() {
         setCameraActive(true);
       } else if (data.status === "stopped") {
         setCameraActive(false);
+      }
+    });
+
+    // Interview event handler
+    newSocket.on("interview_status", (data) => {
+      console.log("Interview status:", data);
+      if (data.status === "started") {
+        setInterviewStarted(true);
+      } else if (data.status === "stopped") {
+        setInterviewStarted(false);
       }
     });
 
@@ -101,14 +113,21 @@ export default function HomePage() {
     }
   };
 
-  const sendMessage = () => {
+  const startInterview = () => {
     if (socket && connected) {
-      socket.emit("user_message", {
-        message: "Hello from frontend!",
-        timestamp: Date.now(),
-      });
+      socket.emit("start_interview", {});
     }
   };
+
+  const handleReadyClick = () => {
+    // TODO: Implement ready button functionality
+  };
+
+      // socket.emit("user_message", {
+      //   message: "Hello from frontend!",
+      //   timestamp: Date.now(),
+      // });
+
 
 
   return (
@@ -137,11 +156,11 @@ export default function HomePage() {
             Stop Camera
           </button>
           <button
-            onClick={sendMessage}
-            disabled={!connected}
+            onClick={startInterview}
+            disabled={!connected || interviewStarted}
             className="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 disabled:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition"
           >
-            Send Test Message
+            Start Interview
           </button>
         </div>
       </div>
@@ -168,21 +187,29 @@ export default function HomePage() {
         </div>
 
         {/* Data Panel */}
-        <div className="flex-1 flex justify-center items-center border-l border-[#444] pl-5">
+        <div className="relative flex-1 flex justify-center items-center border-l border-[#444] pl-5">
           <div className="w-full h-full flex flex-col gap-3 overflow-y-auto pr-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[#1e1e1e] [&::-webkit-scrollbar-track]:rounded [&::-webkit-scrollbar-thumb]:bg-[#555] [&::-webkit-scrollbar-thumb]:rounded [&::-webkit-scrollbar-thumb:hover]:bg-[#666]">
             <Node
-              title="AI Response"
+              title="Interview Questions"
               content={aiResponse}
             />
             <Node
-              title="Audio Processing Status"
+              title="Speech Analysis"
               content={audioStatus}
             />
             <Node
-              title="Speech Analysis"
+              title="Practice Summary"
               content="Speech pacing, clarity, and volume metrics will appear here."
             />
           </div>
+
+          <button
+            onClick={handleReadyClick}
+            disabled={!connected || !interviewStarted}
+            className="absolute bottom-4 left-4 w-16 h-16 rounded-full bg-blue-500 text-white font-semibold text-sm disabled:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-transform duration-150 hover:scale-110 active:scale-95 enabled:hover:bg-blue-600"
+          >
+            Ready!
+          </button>
         </div>
       </div>
     </div>
