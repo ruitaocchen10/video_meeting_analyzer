@@ -1,4 +1,4 @@
-# Video Meeting Analyzer
+# Recruit Ready
 
 An AI-powered interview preparation application that provides real-time feedback on posture, speech, and body language during mock interviews. The system combines computer vision, audio analysis, and an AI agent to simulate realistic interview scenarios with personalized feedback.
 
